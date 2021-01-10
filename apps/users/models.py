@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import (
     BaseUserManager, AbstractBaseUser
 )
+from datetime import datetime
 
 
 class CustomUserManager(BaseUserManager):
@@ -57,6 +58,16 @@ class User(AbstractBaseUser):
         return True
 
 
+
+def upload_location(instance, filename, *args, **kwargs):
+    file_path = 'Users/{user_id}/{filename}'.format(
+        user_id=str(instance.user.id) +'.'+ str(instance.name), filename=filename
+    )
+    return file_path
+
+
+
+
 class UserProfile(models.Model):
     user = models.OneToOneField(
         User,
@@ -66,7 +77,8 @@ class UserProfile(models.Model):
     name = models.CharField(max_length=100)
     bio = models.TextField(default='', blank=True)
     preferred_name = models.CharField(max_length=100, null=True)
-    # avatar_url = models.CharField(max_length=255, null=True)
+    avatar = models.ImageField(
+        upload_to=upload_location, null=False, max_length=5000, blank=False)
     discord_name = models.CharField(max_length=100, null=True)
     github_username = models.CharField(max_length=100)
     codepen_username = models.CharField(max_length=100, null=True)
@@ -79,7 +91,8 @@ class UserProfile(models.Model):
     current_level = models.IntegerField(choices=LEVELS, default=1)
 
     phone = models.CharField(max_length=50, null=True)
-    timezone = models.CharField(max_length=50, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f'{self.name}'

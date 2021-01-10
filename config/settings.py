@@ -87,9 +87,9 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': '***********',
-        'USER': '***********',
-        'PASSWORD': '*******',
+        'NAME': 'schoolapi',
+        'USER': 'shubham_admin',
+        'PASSWORD': 'yadav12345',
         'HOST': 'localhost',
         'PORT': '',
     }
@@ -131,17 +131,17 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
-SOCIAL_AUTH_GITHUB_KEY = os.environ['GITHUB_CLIENT_ID']
-SOCIAL_AUTH_GITHUB_SECRET = os.environ['GITHUB_CLIENT_SECRET']
-SOCIAL_AUTH_POSTGRES_JSONFIELD = True
-DRFSO2_PROPRIETARY_BACKEND_NAME = 'Github'
+# SOCIAL_AUTH_GITHUB_KEY = os.environ['GITHUB_CLIENT_ID']
+# SOCIAL_AUTH_GITHUB_SECRET = os.environ['GITHUB_CLIENT_SECRET']
+# SOCIAL_AUTH_POSTGRES_JSONFIELD = True
+# DRFSO2_PROPRIETARY_BACKEND_NAME = 'Github'
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 
