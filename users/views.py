@@ -25,7 +25,7 @@ class RegisterAPI(generics.GenericAPIView):
 class UserList(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    # permission_classes = [IsAdminUser]
+    permission_classes = [IsAdminUser]
 
     def list(self, request):
         # Note the use of `get_queryset()` instead of `self.queryset`
