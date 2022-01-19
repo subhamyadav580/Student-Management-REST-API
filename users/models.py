@@ -1,3 +1,4 @@
+import email
 from email.policy import default
 from django.conf import settings
 from django.db.models.signals import post_save
@@ -90,14 +91,14 @@ class User(AbstractBaseUser):
 
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(
+    email = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
         primary_key=True,
     )
     name = models.CharField(max_length=100)
     bio = models.TextField(default='', blank=True)
-    preferred_name = models.CharField(max_length=100, null=True)
+    preferred_name = models.CharField(max_length=100, null=True, blank=True)
     image = models.ImageField(default='default.png', upload_to='profile_pics')
     avatar_url = models.CharField(max_length=255, null=True, blank=True)
     discord_name = models.CharField(max_length=100, null=True, blank=True)
@@ -121,11 +122,10 @@ class UserProfile(models.Model):
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_user_profile(sender, instance=None, created=False, **kwargs,):
 	if created:
-		UserProfile.objects.create(user=instance)
+		UserProfile.objects.create(email=instance)
 
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs,):
 	if created:
-            print(instance)
             Token.objects.create(user=instance)

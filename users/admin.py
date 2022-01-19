@@ -28,7 +28,7 @@ class UserAdmin(BaseUserAdmin):
     filter_horizontal = ()
 
 class ItemAdmin(admin.ModelAdmin):
-    list_display = ("user", "name", "bio")
+    list_display = ("email",)
 
 
 admin.site.register(UserProfile, ItemAdmin)
