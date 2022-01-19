@@ -1,7 +1,8 @@
+import email
 from rest_framework import serializers
 
 from .models import User
-
+from django.contrib.auth import authenticate
 
 
 # User Serializer
@@ -38,3 +39,20 @@ class RegisterSerializer(serializers.ModelSerializer):
             user.save()
 
             return user
+
+
+# Login Serializer
+class LoginSerializer(serializers.Serializer):
+    email = serializers.CharField()
+    password = serializers.CharField()
+
+    def validate(self, data):
+        user = authenticate(**data)
+        print(user)
+        if user and user.is_active:
+            return user
+        raise serializers.ValidationError("Incorrect Credentials")
+
+
+
+
