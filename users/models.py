@@ -1,7 +1,7 @@
-import email
+import os
 from email.policy import default
 from django.conf import settings
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save, post_delete
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 from django.db import models
@@ -116,7 +116,7 @@ class UserProfile(models.Model):
     timezone = models.CharField(max_length=50, null=True, blank=True)
 
     def __str__(self):
-        return f'{self.name}'
+        return f'{self.email}'
 
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
@@ -129,3 +129,32 @@ def create_user_profile(sender, instance=None, created=False, **kwargs,):
 def create_auth_token(sender, instance=None, created=False, **kwargs,):
 	if created:
             Token.objects.create(user=instance)
+
+@receiver(pre_save, sender=UserProfile)
+def pre_save_image(sender, instance, **kwargs):
+    """ instance old image file will delete from os """
+    try:
+        old_img = sender.objects.get(email=instance).image.path
+        print(old_img)
+        try:
+            new_img = instance.image.path
+        except:
+            new_img = None
+        if new_img != old_img:
+            import os
+            if os.path.exists(old_img):
+                os.remove(old_img)
+    except:
+        pass
+
+
+@receiver(post_delete, sender=UserProfile)
+def auto_delete_file_on_delete(sender, instance, **kwargs):
+    """
+    Deletes file from filesystem
+    when corresponding `MediaFile` object is deleted.
+    """
+    print(instance.image)
+    if instance.image:
+        if os.path.isfile(instance.image.path):
+            os.remove(instance.image.path)
