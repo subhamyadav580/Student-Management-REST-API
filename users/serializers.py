@@ -1,7 +1,7 @@
 import email
 from rest_framework import serializers
 
-from .models import User
+from .models import User, UserProfile
 from django.contrib.auth import authenticate
 
 
@@ -53,6 +53,35 @@ class LoginSerializer(serializers.Serializer):
             return user
         raise serializers.ValidationError("Incorrect Credentials")
 
+# User Profile Update Serializer
+class UserProfileUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserProfile
+        fields = ["email", "name", "bio", "preferred_name", "image", 
+                        "avatar_url", "discord_name", "github_username",
+                        "codepen_username", "fcc_profile_url", "current_level",
+                        "phone", "timezone"]
 
+
+
+    def update(self, instance, validated_data):
+        instance.email = validated_data.get('email', instance.email)
+        instance.name = validated_data.get('name', instance.name)
+        instance.bio = validated_data.get('bio', instance.bio)
+        instance.preferred_name = validated_data.get('preferred_name', instance.preferred_name)
+        instance.image = validated_data.get('image', instance.image)
+        instance.avatar_url = validated_data.get('avatar_url', instance.avatar_url)
+        instance.discord_name = validated_data.get('discord_name', instance.discord_name)
+        instance.github_username = validated_data.get('github_username', instance.github_username)
+        instance.codepen_username = validated_data.get('codepen_username', instance.codepen_username)
+        instance.fcc_profile_url = validated_data.get('fcc_profile_url', instance.fcc_profile_url)
+        instance.current_level = validated_data.get('current_level', instance.current_level)
+        instance.phone = validated_data.get('phone', instance.phone)
+        instance.timezone = validated_data.get('timezone', instance.timezone)
+        
+        instance.save()
+        return instance
+    
+    
 
 
