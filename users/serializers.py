@@ -9,7 +9,7 @@ from django.contrib.auth import authenticate
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'email', 'is_students')
+        fields = ('id', 'email', 'is_students', "is_staff", "is_admin")
 
 
 
@@ -20,7 +20,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'email', 'password', 'password2','is_students']
+        fields = ['id', 'email', 'password', 'password2','is_students', "is_staff", "is_admin"] 
         extra_kwargs = {'password': {'write_only': True}}
 
     def save(self):
@@ -57,28 +57,22 @@ class LoginSerializer(serializers.Serializer):
 class UserProfileUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
-        fields = ["email", "name", "bio", "preferred_name", "image", 
-                        "avatar_url", "discord_name", "github_username",
-                        "codepen_username", "fcc_profile_url", "current_level",
-                        "phone", "timezone"]
+        fields = ["email", "fname", "mname", "lname","bio", "image", "contact_add",
+                        "gender", "age", "phone"]
 
 
 
     def update(self, instance, validated_data):
         instance.email = validated_data.get('email', instance.email)
-        instance.name = validated_data.get('name', instance.name)
+        instance.fname = validated_data.get('fname', instance.fname)
+        instance.mname = validated_data.get('mname', instance.mname)
+        instance.lname = validated_data.get('lname', instance.lname)
         instance.bio = validated_data.get('bio', instance.bio)
-        instance.preferred_name = validated_data.get('preferred_name', instance.preferred_name)
         instance.image = validated_data.get('image', instance.image)
-        instance.avatar_url = validated_data.get('avatar_url', instance.avatar_url)
-        instance.discord_name = validated_data.get('discord_name', instance.discord_name)
-        instance.github_username = validated_data.get('github_username', instance.github_username)
-        instance.codepen_username = validated_data.get('codepen_username', instance.codepen_username)
-        instance.fcc_profile_url = validated_data.get('fcc_profile_url', instance.fcc_profile_url)
-        instance.current_level = validated_data.get('current_level', instance.current_level)
+        instance.contact_add = validated_data.get('contact_add', instance.contact_add)
+        instance.gender = validated_data.get('gender', instance.gender)
+        instance.age = validated_data.get('age', instance.age)
         instance.phone = validated_data.get('phone', instance.phone)
-        instance.timezone = validated_data.get('timezone', instance.timezone)
-        
         instance.save()
         return instance
     

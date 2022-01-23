@@ -1,5 +1,6 @@
 import os
 from email.policy import default
+from statistics import mode
 from django.conf import settings
 from django.db.models.signals import post_save, pre_save, post_delete
 from django.dispatch import receiver
@@ -58,14 +59,6 @@ class User(AbstractBaseUser):
     REQUIRED_FIELDS = [] # Email & Password are required by default.
     objects = UserManager()
 
-    def get_full_name(self):
-        # The user is identified by their email address
-        return self.email
-
-    def get_short_name(self):
-        # The user is identified by their email address
-        return self.email
-
     def __str__(self):
         return self.email
 
@@ -79,16 +72,6 @@ class User(AbstractBaseUser):
         # Simplest possible answer: Yes, always
         return True
 
-    # @property
-    # def is_staff(self):
-    #     "Is the user a member of staff?"
-    #     return self.staff
-
-    # @property
-    # def is_admin(self):
-    #     "Is the user a admin member?"
-    #     return self.admin
-
 
 class UserProfile(models.Model):
     email = models.OneToOneField(
@@ -96,27 +79,27 @@ class UserProfile(models.Model):
         on_delete=models.CASCADE,
         primary_key=True,
     )
-    name = models.CharField(max_length=100)
+    fname = models.CharField(max_length=100)
+    mname = models.CharField(max_length=100)
+    lname = models.CharField(max_length=100)
     bio = models.TextField(default='', blank=True)
-    preferred_name = models.CharField(max_length=100, null=True, blank=True)
     image = models.ImageField(default='default.png', upload_to='profile_pics')
-    avatar_url = models.CharField(max_length=255, null=True, blank=True)
-    discord_name = models.CharField(max_length=100, null=True, blank=True)
-    github_username = models.CharField(max_length=100, blank=True)
-    codepen_username = models.CharField(max_length=100, null=True, blank=True)
-    fcc_profile_url = models.CharField(max_length=255, null=True, blank=True)
-
-    LEVELS = (
-        (1, 'Level One'),
-        (2, 'Level Two'),
+    contact_add = models.TextField(default="", blank=True)
+    gender_choices = (
+        (0, 'Select Gender'),
+        (1, 'Male'),
+        (2, 'Female'),
+        (3, 'Transgender')
     )
-    current_level = models.IntegerField(choices=LEVELS, default=1)
-
+    gender = models.IntegerField(choices=gender_choices, default=0)
+    age = models.IntegerField()
     phone = models.CharField(max_length=50, null=True, blank=True)
-    timezone = models.CharField(max_length=50, null=True, blank=True)
 
     def __str__(self):
         return f'{self.email}'
+
+    def get_full_name(self):
+        return f"{self.fname} {self.mname} {self.lname}"
 
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
@@ -135,7 +118,6 @@ def pre_save_image(sender, instance, **kwargs):
     """ instance old image file will delete from os """
     try:
         old_img = sender.objects.get(email=instance).image.path
-        print(old_img)
         try:
             new_img = instance.image.path
         except:
@@ -154,7 +136,6 @@ def auto_delete_file_on_delete(sender, instance, **kwargs):
     Deletes file from filesystem
     when corresponding `MediaFile` object is deleted.
     """
-    print(instance.image)
     if instance.image:
         if os.path.isfile(instance.image.path):
             os.remove(instance.image.path)
