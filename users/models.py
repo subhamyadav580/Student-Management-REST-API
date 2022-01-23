@@ -79,9 +79,9 @@ class UserProfile(models.Model):
         on_delete=models.CASCADE,
         primary_key=True,
     )
-    fname = models.CharField(max_length=100)
-    mname = models.CharField(max_length=100)
-    lname = models.CharField(max_length=100)
+    fname = models.CharField(max_length=100, default="")
+    mname = models.CharField(max_length=100, default="")
+    lname = models.CharField(max_length=100, default="")
     bio = models.TextField(default='', blank=True)
     image = models.ImageField(default='default.png', upload_to='profile_pics')
     contact_add = models.TextField(default="", blank=True)
@@ -92,7 +92,7 @@ class UserProfile(models.Model):
         (3, 'Transgender')
     )
     gender = models.IntegerField(choices=gender_choices, default=0)
-    age = models.IntegerField()
+    age = models.IntegerField(default=0)
     phone = models.CharField(max_length=50, null=True, blank=True)
 
     def __str__(self):

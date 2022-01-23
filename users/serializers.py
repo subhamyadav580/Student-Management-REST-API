@@ -59,9 +59,7 @@ class UserProfileUpdateSerializer(serializers.ModelSerializer):
         model = UserProfile
         fields = ["email", "fname", "mname", "lname","bio", "image", "contact_add",
                         "gender", "age", "phone"]
-
-
-
+                        
     def update(self, instance, validated_data):
         instance.email = validated_data.get('email', instance.email)
         instance.fname = validated_data.get('fname', instance.fname)
